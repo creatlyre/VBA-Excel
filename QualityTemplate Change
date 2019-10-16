@@ -18,16 +18,16 @@ Dim ErrorCombination As String
             'Debug.Print Accuracy.Column; "Accuracy Column"
             
             If Cells(SearchRow, Accuracy.Column) = "Yes" Then
-                Call YesValue(SearchRow)
+                Call DropDownMenuValue_Yes(SearchRow)
                 
             ElseIf Cells(SearchRow, Accuracy.Column) = "No" Then
                 If Cells(SearchRow, Comments.Column) = " " Then
-                    Call NoValue(SearchRow)
+                    Call DropDownMenuValue_No(SearchRow)
                     ErrorCombination = Cells(38, 4) + Chr(10) + Cells(SearchRow, ErrorCode_Cell.Column) + " - " + Cells(SearchRow, Comments.Column).Text
                     Cells(38, 4) = ErrorCombination
                 End If
             ElseIf Cells(SearchRow, Accuracy.Column) = "N/A" Then
-                Call NAValue(SearchRow)
+                Call DropDownMenuValue_NA(SearchRow)
                 
             ElseIf IsEmpty(Cells(SearchRow, Accuracy.Column)) And Not IsEmpty(Cells(SearchRow, Accuracy.Column - 1)) Then
                 Call ClearCells(SearchRow)
