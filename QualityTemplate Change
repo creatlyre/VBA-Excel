@@ -1,0 +1,46 @@
+Private Sub Worksheet_Change(ByVal Target As Range)
+
+If Not Intersect(Target, Range("E:E")) Is Nothing Then    
+Dim Workflow As Range, Comments As Range, ErrorCode_Cell As Range
+Dim Accuracy As Range
+Dim SearchRow As Integer
+Dim ErrorCombination As String
+
+    Set Accuracy = Range("A1:I20").Find("Accuracy")
+    Set Workflow = Range("A1:I20").Find("Workflow Stage")
+    Set Comments = Range("A1:I20").Find("Comments")
+    Set ErrorCode_Cell = Range("A1:I20").Find("Error")
+    
+    For SearchRow = 1 To 60
+    'Debug.Print SearchRow
+    
+            'Debug.Print SearchRow; "SearchRow Pre Call"
+            'Debug.Print Accuracy.Column; "Accuracy Column"
+            
+            If Cells(SearchRow, Accuracy.Column) = "Yes" Then
+                Call YesValue(SearchRow)
+                
+            ElseIf Cells(SearchRow, Accuracy.Column) = "No" Then
+                If Cells(SearchRow, Comments.Column) = " " Then
+                    Call NoValue(SearchRow)
+                    ErrorCombination = Cells(38, 4) + Chr(10) + Cells(SearchRow, ErrorCode_Cell.Column) + " - " + Cells(SearchRow, Comments.Column).Text
+                    Cells(38, 4) = ErrorCombination
+                End If
+            ElseIf Cells(SearchRow, Accuracy.Column) = "N/A" Then
+                Call NAValue(SearchRow)
+                
+            ElseIf IsEmpty(Cells(SearchRow, Accuracy.Column)) And Not IsEmpty(Cells(SearchRow, Accuracy.Column - 1)) Then
+                Call ClearCells(SearchRow)
+            
+            'ElseIf Cells(SearchRow, Accuracy.Column).MergeCells = True And IsEmpty(Cells(SearchRow + 1, Accuracy.Column)) Then
+                'Debug.Print SearchRow
+                'Exit For
+            
+            End If
+                    
+    Next SearchRow
+    
+End If
+
+
+End Sub
