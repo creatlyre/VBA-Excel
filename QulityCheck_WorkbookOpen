@@ -1,0 +1,52 @@
+Private Sub Workbook_Open()
+If IsEmpty(Cells(1, 4)) Then
+    x = 0
+    ProductSelection.Show
+    Cells(1, 4) = CliName
+    'changing wording in Review Bids depends on product
+    If DentVisVal = True Then
+        'adding specified descrpition in specifc cell
+        Cells(27, 4) = "Bid level questionnaire" + Chr(10) + "Product questionnaire"
+        Cells(31, 4) = "Contents, Executive and Vendor Participant Summary" + Chr(10) + "Underwriting assumptions" + Chr(10) + "Vendor financial ratings, Commission disclosure"
+        Cells(7, 5) = "N/A"
+
+    ElseIf LDVal = True Then
+        'adding specified descrpition in specifc cell
+        Cells(27, 4) = "Table of Contents, Quote summary, Vendor information, Commission Disclosure" + Chr(10) + "Vendor Comments and Volume"
+        Cells(31, 4) = "Executive Summary" + Chr(10) + "Vendor comments"
+        Cells(14, 5) = "N/A"
+    ElseIf SAVal = True Then
+        'adding specified descrpition in specifc cell
+        Cells(27, 4) = "Vendor Participant Summary" + Chr(10) + "Performance Guarantees, Commission"
+        Cells(31, 4) = "Vendor Participant Summary" + Chr(10) + "Performance Guarantees, Commission"
+        Cells(7, 5) = "N/A"
+    ElseIf VBVal = True Then
+        'adding specified descrpition in specifc cell
+        Cells(27, 4) = "Communications, Implementation, Enrolment" + Chr(10) + "Rate Caveats, Commissions, Vendor Ratings"
+        Cells(31, 4) = "Communications, Implementation, Enrolment" + Chr(10) + "Rate Caveats, Commissions, Vendor Ratings"
+        For NARow = 1 To 4
+            Cells(NARow + 5, 5) = "N/A"
+        Next NARow
+    ElseIf SLVal = True Then
+        'adding specified descrpition in specifc cell
+        Cells(27, 4) = "Laser Summary" + Chr(10) + "Questionnaire"
+        Cells(31, 4) = "Laser Summary" + Chr(10) + "Questionnaire, Carriers Assumptions"
+        Cells(7, 5) = "N/A"
+    ElseIf MedVal = True Then
+        'adding specified descrpition in specifc cell
+        Cells(27, 4) = "Reviewing Questionnaire, Marketing Results, Contents" + Chr(10) + "Marketing Overview, Executive Summary"
+        Cells(31, 4) = "Vendors Participation Summary, Appendix Content (Financial Exhibits, Vendor Financial Ratings Exhibit/Commission Disclosure)"
+        Cells(7, 5) = "N/A"
+    Else
+        'adding specified descrpition in specifc cell
+        Cells(27, 4) = "Other - Not listed"
+        Cells(31, 4) = "Other - Not listed" + Chr(10) + "(Vendors Participation Summary, Appendix Content (Vendor Financial Ratings Exhibit/Commission Disclosure)"
+
+    End If
+    
+    'saving file
+    Call ThisWorkbook.SaveAs(CliName & " Quality Check Template", xlOpenXMLWorkbookMacroEnabled)
+
+End If
+
+End Sub
