@@ -1,0 +1,78 @@
+Public Sub Matching()
+
+Dim MatchingColumn As Variant, InsertColumn As Integer
+Dim ClaimArray() As String
+Dim FileName As Variant
+Dim ws As Workbook
+Dim RowEnd As Integer
+
+
+For EndTableRow = 12 To 20000
+    'Debug.Print EndTableRow
+    If IsEmpty(Cells(EndTableRow, 9)) Then
+        Exit For
+    ElseIf Not IsEmpty(Cells(EndTableRow, 9)) And IsEmpty(Cells(EndTableRow + 1, 9)) Then
+        RowEnd = EndTableRow
+        Debug.Print RowEnd
+    End If
+Next EndTableRow
+
+ReDim ClaimArray(RowEnd, 14) 'changing dimension of array to have alwayas till end of row
+
+For i = 13 To 20000 'adding values to an array
+    For k = 9 To 14
+
+            If IsEmpty(Cells(i, 9)) Then
+                Exit For
+            Else
+                ClaimArray(i, k) = Cells(i, k)
+            End If
+            'Debug.Print ClaimArray(i, k); " Claim array"; i; ":"; k;
+            
+    Next k
+Next i
+            
+            
+
+'ClientFolderName = InputBox("Provide a client folder name", "Client Folder Name on SD")
+'Year = InputBox("what is effective year (2019 or 2020)?", "Year folder")
+
+
+'Form from which I have file destinantion
+ClientFolder.Show
+
+While bool = fasle
+
+    FileName = InputBox("Provide a full file name (with extension) where matching should be done", "File Name")
+    'opening excel file
+    Set ws = Workbooks.Open(FileName:="Correct folder path" & ClientFolderName & "\continue of folder path\" & Year & "\continue of folder path" & FileName)
+    While Not IsNumeric(MatchingColumn) Or IsEmpty(MatchingColumn)
+        MatchingColumn = InputBox("In which column are located Member ID (if in A column insert 1 if B then 2 etc.", "Matching Column", "1")
+        InsertColumn = MatchingColumn + 1
+    Wend
+    Cells(1, InsertColumn).EntireColumn.Insert
+    
+    
+    For i = 1 To 20000 'comparing value in excel file with array lists
+        For ArrayRow = 1 To RowEnd
+            If IsEmpty(Cells(i, InsertColumn - 1)) Then
+                Exit For
+            ElseIf IsEmpty(ClaimArray(ArrayRow, 9)) Then
+                'do nothing
+            Else
+                Debug.Print "Claim array: "; ClaimArray(ArrayRow, 9); " "; "Cell value: "; Cells(i, InsertColumn - 1)
+                
+                If Cells(i, InsertColumn - 1) = ClaimArray(ArrayRow, 9) Then
+                    Cells(i, InsertColumn) = ClaimArray(ArrayRow, 13)
+                Else
+                    'do nothing
+                End If
+            End If
+        Next ArrayRow
+    Next i
+    Claims.Show
+    MatchingColumn = ""
+Wend
+
+
+End Sub
