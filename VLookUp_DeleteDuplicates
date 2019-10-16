@@ -1,0 +1,109 @@
+Public bool As Boolean
+Public Clicks As Integer
+Public ClientFolderName As Variant
+Public Year As Variant
+
+Sub EndofTable()
+
+Dim RowEnd As Integer
+Dim NumberID As Integer
+NumberID = 1
+
+
+For EndTableRow = 12 To 20000
+    'Debug.Print EndTableRow
+    If IsEmpty(Cells(EndTableRow, 1)) Then
+        Exit For
+    ElseIf Not IsEmpty(Cells(EndTableRow, 1)) And IsEmpty(Cells(EndTableRow + 1, 1)) Then
+        RowEnd = EndTableRow
+        'Debug.Print RowEnd
+    End If
+    
+Next EndTableRow
+
+'Copy and pasting whole table
+Range("A12").Select
+Range(Selection, Selection.End(xlDown)).Select
+Range(Selection, Selection.End(xlToRight)).Select
+
+Selection.Copy Range("I12")
+Range("I12").Select
+Range(Selection, Selection.End(xlDown)).Select
+Range(Selection, Selection.End(xlToRight)).Select
+
+'removing duplicates depending how many Identifier are available
+If Not IsEmpty(Cells(13, 3)) Then
+    With Selection
+        .RemoveDuplicates Columns:=Array(1, 2, 3), Header:=xlYes
+    End With
+ElseIf Not IsEmpty(Cells(13, 2)) Then
+    With Selection
+        .RemoveDuplicates Columns:=Array(1, 2), Header:=xlYes
+    End With
+Else
+    With Selection
+        .RemoveDuplicates Columns:=Array(1), Header:=xlYes
+    End With
+End If
+
+If Not IsEmpty(Cells(13, 3)) Then
+    Range("I13:K13").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Selection.FormatConditions.AddUniqueValues
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    Selection.FormatConditions(1).DupeUnique = xlDuplicate
+    With Selection.FormatConditions(1).Font
+        .Color = -16383844
+        .TintAndShade = 0
+    End With
+    With Selection.FormatConditions(1).Interior
+        .PatternColorIndex = xlAutomatic
+        .Color = 13551615
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+ElseIf Not IsEmpty(Cells(13, 2)) Then
+    Range("I13:J13").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Selection.FormatConditions.AddUniqueValues
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    Selection.FormatConditions(1).DupeUnique = xlDuplicate
+    With Selection.FormatConditions(1).Font
+        .Color = -16383844
+        .TintAndShade = 0
+    End With
+    With Selection.FormatConditions(1).Interior
+        .PatternColorIndex = xlAutomatic
+        .Color = 13551615
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+Else
+    Range("I13").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Selection.FormatConditions.AddUniqueValues
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    Selection.FormatConditions(1).DupeUnique = xlDuplicate
+    With Selection.FormatConditions(1).Font
+        .Color = -16383844
+        .TintAndShade = 0
+    End With
+    With Selection.FormatConditions(1).Interior
+        .PatternColorIndex = xlAutomatic
+        .Color = 13551615
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+End If
+'adding Claimant with incremented number to each cell
+For ClaimID = 13 To 15000
+
+    If Not IsEmpty(Cells(ClaimID, 9)) Then
+        Cells(ClaimID, 13) = "Claimant " & NumberID
+        NumberID = NumberID + 1
+    Else
+        Exit For
+    End If
+    
+Next ClaimID
+End Sub
