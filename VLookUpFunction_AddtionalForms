@@ -1,0 +1,84 @@
+Private Sub CancelButton_Click()
+
+Unload Me
+
+End Sub
+
+Private Sub ClientFolderNameTextBox_Change()
+
+ClientFolderName = ClientFolderNameTextBox
+End Sub
+
+
+Private Sub InsertClientNameGuide_Click()
+Call MsgBox("Example:" & Chr(10) & Chr(10) & "Folder Path: Z:\FS100VOL1\SPS_Team\Bonitz, Inc\Stop Loss\2019\Data And All Communications\Working Data\Claims\Claimant 2017-2018 W.xlsx" & Chr(10) & Chr(10) & "Client name: Bonitz, Inc", vbOKOnly, "Help")
+End Sub
+
+Private Sub InsertYearGuide_Click()
+Call MsgBox("Example:" & Chr(10) & Chr(10) & "Folder Path: Z:\FS100VOL1\SPS_Team\Bonitz, Inc\Stop Loss\2019\Data And All Communications\Working Data\Claims\Claimant 2017-2018 W.xlsx" & Chr(10) & Chr(10) & "Year: 2019", vbOKOnly, "Help")
+End Sub
+
+Private Sub Label1_Click()
+
+End Sub
+
+Private Sub Label2_Click()
+
+End Sub
+
+Private Sub OK_Click()
+If IsEmpty(ClientFolderName) Then
+   Call MsgBox("You did not provide a Client Folder Name", vbOKOnly, "Error: 152")
+    
+ElseIf IsEmpty(Year) Then
+    Call MsgBox("You did not provide a Year", vbOKOnly, "Error: 153")
+Else
+    Unload Me
+End If
+
+End Sub
+
+
+Private Sub UserForm_Click()
+
+End Sub
+
+
+
+Private Sub YearTextBox_Change()
+
+Year = YearTextBox
+End Sub
+
+
+Private Sub CommandButton1_Click()
+
+End Sub
+
+Private Sub Label1_Click()
+
+End Sub
+
+Private Sub Label2_Click()
+
+End Sub
+
+Private Sub Label3_Click()
+
+End Sub
+
+Public Sub No_Click()
+
+bool = True
+Unload Me
+End Sub
+
+Private Sub UserForm_Click()
+
+End Sub
+
+Public Sub Yes_Click()
+
+bool = False
+Unload Me
+End Sub
