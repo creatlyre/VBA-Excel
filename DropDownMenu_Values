@@ -1,0 +1,137 @@
+Private Sub DropDownMenuValue_No(range1 As Integer)
+
+Call ClearCells(range1)
+Dim LockRange As Variant, ExitLoop As Boolean
+Dim ErrorNumber As Integer
+Dim PreCall As Variant, BuildRFP As Variant, Communication As Variant, ReviewBids As Variant
+    
+    Set PreCall = Range("A1:B60").Find("Pre")
+    Set BuildRFP = Range("A1:B60").Find("Build")
+    Set Communication = Range("A1:B60").Find("Comm")
+    Set ReviewBids = Range("A1:B60").Find("Bids")
+
+
+'checks in which section is "no" countg first from the lowest
+    If range1 > ReviewBids.Row - 1 Then
+        ErrorNumber = range1 - ReviewBids.Row + 1
+            Do
+                LockRange = InputBox("Please provide a comment", "Error Code: 4RFP" & ErrorNumber)
+                Select Case LockRange
+                    Case Is = "False"
+                        ExitLoop = False
+                        
+                    Case Is = ""
+                        ExitLoop = False
+                        
+                    Case Else
+                        If Len(LockRange) = 0 Then
+                            ExitLoop = False
+                            
+                        Else
+                            ExitLoop = True
+                            
+                        End If
+                End Select
+            Loop Until ExitLoop = True
+            Cells(range1, 6) = "4RFP" & ErrorNumber
+            Cells(range1, 7) = LockRange
+    ElseIf range1 > Communication.Row - 1 Then
+        ErrorNumber = range1 - Communication.Row + 1
+            Do
+                LockRange = InputBox("Please provide a comment", "Error Code: 3RFP" & ErrorNumber)
+                Select Case LockRange
+                    Case Is = "False"
+                        ExitLoop = False
+                        
+                    Case Is = ""
+                        ExitLoop = False
+                        
+                    Case Else
+                        If Len(LockRange) = 0 Then
+                            ExitLoop = False
+                            
+                        Else
+                            ExitLoop = True
+                            
+                        End If
+                End Select
+            Loop Until ExitLoop = True
+            Cells(range1, 6) = "3RFP" & ErrorNumber
+            Cells(range1, 7) = LockRange
+    ElseIf range1 > BuildRFP.Row - 1 Then
+        ErrorNumber = range1 - BuildRFP.Row + 1
+            Do
+                LockRange = InputBox("Please provide a comment", "Error Code: 2RFP" & ErrorNumber)
+                Select Case LockRange
+                    Case Is = "False"
+                        ExitLoop = False
+                        
+                    Case Is = ""
+                        ExitLoop = False
+                        
+                    Case Else
+                        If Len(LockRange) = 0 Then
+                            ExitLoop = False
+                            
+                        Else
+                            ExitLoop = True
+                            
+                        End If
+                End Select
+            Loop Until ExitLoop = True
+            Cells(range1, 6) = "2RFP" & ErrorNumber
+            Cells(range1, 7) = LockRange
+    ElseIf range1 > PreCall.Row - 1 Then
+        ErrorNumber = range1 - PreCall.Row
+            Do
+                LockRange = InputBox("Please provide a comment", "Error Code: 1RFP" & ErrorNumber)
+                Select Case LockRange
+                    Case Is = "False"
+                        ExitLoop = False
+                        
+                    Case Is = ""
+                        ExitLoop = False
+                        
+                    Case Else
+                        If Len(LockRange) = 0 Then
+                            ExitLoop = False
+                            
+                        Else
+                            ExitLoop = True
+                            
+                        End If
+                End Select
+            Loop Until ExitLoop = True
+            Cells(range1, 6) = "1RFP" & ErrorNumber
+            Cells(range1, 7) = LockRange
+    End If
+    
+
+            'Call QualityCheck
+
+End Sub
+
+Private Sub DropDownMenuValue_Yes(range1 As Integer)
+        Call ClearCells(range1)
+        Cells(range1, 6).Interior.ColorIndex = 48
+        'Call QualityCheck
+        
+End Sub
+
+Private Sub DropDownMenuValue_NA(range1 As Integer)
+    Call ClearCells(range1)
+    'Call QualityCheck
+    Cells(range1, 6).Interior.ColorIndex = 48
+    Cells(range1, 7).Interior.ColorIndex = 48
+End Sub
+
+
+Private Sub ClearCells(range1 As Integer)
+    
+    Cells(range1, 6) = " "
+    Cells(range1, 7) = " "
+    Cells(range1, 6).Interior.ColorIndex = 2
+    Cells(range1, 7).Interior.ColorIndex = 2
+    'Call QualityCheck
+    
+End Sub
