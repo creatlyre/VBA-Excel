@@ -1,0 +1,113 @@
+Private Sub Workbook_Open()
+Dim ws As Worksheet
+Dim xSht  As Variant
+Dim i As Long
+Dim ProductSheetvefile As String
+
+For Each xSht In ActiveWorkbook.Worksheets
+    If xSht.Visible Then i = i + 1
+Next
+
+If Len(Cells(1, 2)) = 13 Then
+    SheetRevSimple.Show
+
+    For Each ws In ActiveWorkbook.Worksheets
+        ws.Visible = False
+        If ProductSheetVal = True And ProductSheetVal = True Then
+            Worksheets("ProductSheet").Visible = xlSheetVisible
+            Worksheets("ProductSheet").Visible = xlSheetVisible
+            Product = "ProductSheet and ProductSheet"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        ElseIf ProductSheetVal = True Then
+            Worksheets("ProductSheet").Visible = xlSheetVisible
+            Product = "ProductSheet"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        ElseIf ProductSheetVal = True Then
+            Worksheets("ProductSheet").Visible = xlSheetVisible
+            Product = "ProductSheet"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        ElseIf ProductSheetVal = True Then
+            Worksheets("ProductSheet").Visible = xlSheetVisible
+            Product = "ProductSheet"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        ElseIf ProductSheetVal = True Then
+            Worksheets("ProductSheet").Visible = xlSheetVisible
+            Product = "ProductSheet"
+        ElseIf ProductSheetVal = True Then
+            Worksheets("ProductSheet").Visible = xlSheetVisible
+            Product = "Life and DiProductSheetbility"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        ElseIf ProductSheetVal = True And ProductSheetVal = True And ProductSheet_AccVal = True Then
+            Worksheets("ProductSheet - Auto Home").Visible = xlSheetVisible
+            Worksheets("ProductSheet - CI ACC HI").Visible = xlSheetVisible
+            Worksheets("ProductSheet - Perm Life").Visible = xlSheetVisible
+            Worksheets("ProductSheet - Legal").Visible = xlSheetVisible
+            Worksheets("ProductSheets").Visible = xlSheetVisible
+            Product = "PROVIDED EMAIL"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        ElseIf ProductSheetVal = True And ProductSheet_AccVal = True Then
+            Worksheets("ProductSheet - Auto Home").Visible = xlSheetVisible
+            Worksheets("ProductSheet - CI ACC HI").Visible = xlSheetVisible
+            Worksheets("ProductSheet - Perm Life").Visible = xlSheetVisible
+            Worksheets("ProductSheet - Legal").Visible = xlSheetVisible
+            Product = "ProductSheet"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        ElseIf ProductSheetVal = True And ProductSheet_AccVal Then
+            Worksheets("ProductSheets").Visible = xlSheetVisible
+            Worksheets("ProductSheet - CI ACC HI").Visible = xlSheetVisible
+            Product = "PROVIDED EMAIL"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        ElseIf ProductSheetVal = True Then
+            Worksheets("ProductSheets").Visible = xlSheetVisible
+            Product = "ProductSheet"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        ElseIf ProductSheet_AccVal = True Then
+            Worksheets("ProductSheet - CI ACC HI").Visible = xlSheetVisible
+            Product = "ProductSheet"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        ElseIf ProductSheetVal = True Then
+            Worksheets("ProductSheet - Auto Home").Visible = xlSheetVisible
+            Worksheets("ProductSheet - Perm Life").Visible = xlSheetVisible
+            Worksheets("ProductSheet - Legal").Visible = xlSheetVisible
+            Product = "ProductSheet"
+            Manager = "PROVIDED EMAIL"
+            Coordinator = "PROVIDED EMAIL"
+        Else
+            ws.Visible = xlSheetHidden
+        End If
+        ws.Cells(1, 2) = "Client Name: " + CliName
+    Next
+    
+    GetRFSContact
+    
+    
+    'Adding Liaison Full Name and Client Size to worksheet Liaison and hides worksheet
+    Application.ScreenUpdating = False
+    ThisWorkbook.Activate
+    Sheets.Add(After:=Sheets(5)).Name = "Liaison"
+    Cells(1, 1) = "Liaison Full Name"
+    Cells(1, 2) = "Client Size"
+    Cells(2, 1) = LiaisonFullName
+    Cells(2, 2) = ClientSize
+    Worksheets("Liaison").Visible = xlVeryHidden
+    Application.ScreenUpdating = True
+    
+    
+    Call ThisWorkbook.ProductSheetveAs(CliName & " Debrief Template", xlOpenXMLWorkbookMacroEnabled)
+    DebriefFile = ThisWorkbook.FullName
+    SendEmail
+Else
+    'do nothing
+End If
+
+End Sub
