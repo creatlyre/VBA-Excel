@@ -1,0 +1,123 @@
+Public LiaisonContact As String, CTContact(6) As String, LiaisonFullName As String, AdminContact As String, PMContact As String, ClientSize As Variant
+
+Public Sub GetRFSContact()
+Dim File As Variant
+Dim AonContactInfo As Range
+Dim AdminCell As Range
+Dim PMCell As Range
+
+'Opens RFS
+Application.ScreenUpdating = False
+File = Application.GetOpenFilename(FileFilter:="Excel Files, *.xl*", Title:="Open RFS File")
+
+If File <> False Then
+    Workbooks.Open Filename:=File, UpdateLinks:=False, ReadOnly:=True
+Else
+    Exit Sub
+End If
+
+'ActiveWindow.Visible = False '<-- do not dispaly RFS File
+Worksheets("Client Information").Activate
+
+Set ClientSize = Range("A1:G40").Find("Eligible Lives")
+ClientSize = Cells(ClientSize.Row, ClientSize.Column + 1)
+Set AonContactInfo = Range("A1:D40").Find("Aon Contact")
+'goes through all contact in RFS
+For ContactRow = AonContactInfo.Row To AonContactInfo.Row + 13
+    'Adding Liaison to LiaisonContact
+    If InStr(1, Cells(ContactRow, 3), "Liaison to US") Then
+        LiaisonFullName = Cells(ContactRow, 4)
+        LiaisonContact = Cells(ContactRow, 4) + " " + Cells(ContactRow + 1, 4)
+    'If in rest row is same name as AE then do nothing
+    ElseIf InStr(1, Cells(ContactRow, 3), "Email") And Cells(ContactRow - 1, 4) <> LiaisonFullName Then
+        For EmptySpaceInArray = 1 To 6
+            'Adding to array contacts new members from CT
+            If InStr(1, CTContact(EmptySpaceInArray), Cells(ContactRow - 1, 4)) Then
+                Exit For
+            ElseIf CTContact(EmptySpaceInArray) = "" Then
+                Debug.Print "Array is eqaul = nothing "; Application.ScreenUpdating
+                CTContact(EmptySpaceInArray) = Cells(ContactRow - 1, 4) + " " + Cells(ContactRow, 4) + ";"
+                'Debug.Print "CTContact no: "; EmptySpaceInArray; " "; CTContact(EmptySpaceInArray)
+                Exit For
+            End If
+        Next EmptySpaceInArray
+    End If
+Next ContactRow
+
+'Opens RFS product sheet depends which is selected from check box
+If DentalVal = True And VisionVal = True Then
+    Worksheets("Dental").Activate
+    Set PMCell = Range("A1:J250").Find("Manager Information")
+    AdminContact = "; " & Cells(PMCell.Row + 1, PMCell.Column + 3) & "; "
+    PMContact = Cells(PMCell.Row + 1, PMCell.Column) & "; "
+    
+ElseIf DentalVal = True Then
+    Worksheets("Dental").Activate
+    Set PMCell = Range("A1:J250").Find("Manager Information")
+    AdminContact = "; " & Cells(PMCell.Row + 1, PMCell.Column + 3) & "; "
+    PMContact = Cells(PMCell.Row + 1, PMCell.Column) & "; "
+    
+ElseIf VisionVal = True Then
+    Worksheets("Vision").Activate
+    Set PMCell = Range("A1:J250").Find("Manager Information")
+    AdminContact = "; " & Cells(PMCell.Row + 1, PMCell.Column + 3) & "; "
+    PMContact = Cells(PMCell.Row + 1, PMCell.Column) & "; "
+    
+ElseIf SLVal = True Then
+    Worksheets("Stop Loss").Activate
+    Set PMCell = Range("A1:J250").Find("Manager Information")
+    AdminContact = "; " & Cells(PMCell.Row + 1, PMCell.Column + 3) & "; "
+    PMContact = Cells(PMCell.Row + 1, PMCell.Column) & "; "
+    
+'ElseIf MedVal = True Then
+'    Worksheets("Medical").Visible = xlSheetVisible '** In Medical sheet I dont know where is Admin Name and PM Name
+    
+ElseIf LDVal = True Then
+    Worksheets("Life&DI").Activate
+    
+    Set PMCell = Range("A1:J250").Find("Manager Information")
+    AdminContact = "; " & Cells(PMCell.Row + 1, PMCell.Column + 2) & "; "
+    PMContact = Cells(PMCell.Row + 1, PMCell.Column) & "; "
+    
+ElseIf VBVal = True And SAVal = True And VB_AccVal = True Then
+    Worksheets("Spending Accounts").Activate
+    Set PMCell = Range("A1:J250").Find("Manager Information")
+    AdminContact = "; " & Cells(PMCell.Row + 1, PMCell.Column + 2) & "; "
+    PMContact = Cells(PMCell.Row + 1, PMCell.Column) & "; "
+    
+'ElseIf VBVal = True And VB_AccVal = True Then
+'    Worksheets("Voluntary Benefits").Activate  '** In Voluntary Benefits sheet I dont know where is Admin Name and PM Name
+    
+ElseIf SAVal = True And VB_AccVal Then
+    Worksheets("Spending Accounts").Activate
+    Set PMCell = Range("A1:J250").Find("Manager Information")
+    AdminContact = "; " & Cells(PMCell.Row + 1, PMCell.Column + 2) & "; "
+    PMContact = Cells(PMCell.Row + 1, PMCell.Column) & "; "
+    
+ElseIf SAVal = True Then
+    Worksheets("Spending Accounts").Activate
+    Set PMCell = Range("A1:J250").Find("Manager Information")
+    AdminContact = "; " & Cells(PMCell.Row + 1, PMCell.Column + 2) & "; "
+    PMContact = Cells(PMCell.Row + 1, PMCell.Column) & "; "
+   
+'ElseIf VB_AccVal = True Then
+'    Worksheets("Voluntary Benefits").Activate  '** In Voluntary Benefits sheet I dont know where is Admin Name and PM Name
+    
+'ElseIf VBVal = True Then
+    'Worksheets("Voluntary Benefits").Activate  '** In Voluntary Benefits sheet I dont know where is Admin Name and PM Name
+
+Else
+    ' do nothing
+End If
+
+If InStr(1, AdminContact, "Drop-down") And InStr(1, PMContact, "Drop-down") Then
+    AdminContact = " + ADD YOURSELF "
+    PMContact = " + ADD PM "
+ElseIf InStr(1, PMContact, "Drop-down") Then
+    PMContact = " + ADD PM "
+ElseIf InStr(1, AdminContact, "Drop-down") Then
+    AdminContact = " + ADD YOURSELF "
+End If
+
+Application.ScreenUpdating = True
+End Sub
