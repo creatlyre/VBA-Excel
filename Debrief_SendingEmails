@@ -1,0 +1,263 @@
+
+Public Sub SendEmail()
+Dim LiaisonName() As String
+
+
+'GetRFSContact
+LiaisonName() = Split(LiaisonFullName)
+Debug.Print LiaisonName(0)
+'** Variables to open files
+Dim attachmentName As Variant
+
+'** Variable for Body message
+Dim bodyMessage As String
+Dim signature As String
+
+'** Deffer delivery date
+Dim DelayMessage As String
+
+
+On Error GoTo ErrHandler
+
+' SET Outlook APPLICATION OBJECT.
+Dim applOutlook As Object
+Set applOutlook = CreateObject("Outlook.Application")
+
+' CREATE EMAIL OBJECT.
+Dim objEmail As Object
+Set objEmail = applOutlook.CreateItem(olMailItem)
+
+'** Creating default signature (diplay default message with signature and save it under variable)
+With objEmail
+    .Display
+End With
+signature = objEmail.HTMLBody
+
+'** Body message here:
+    bodyMessage = "HERE YOU CAN ADD YOUR OUTLOOK MESSAGE"
+
+
+    
+    
+'** Set variables to attachment
+'attachmentName = Application.GetOpenFilename
+'Debug.Print DebriefFile
+
+If Delay = True Then
+    With objEmail
+        
+        .To = LiaisonContact
+        .CC = CTContact(0) & CTContact(1) & CTContact(2) & CTContact(3) & CTContact(4) & CTContact(5) & CTContact(6) & Manager & Coordinator & AdminContact & PMContact
+        .Subject = "ACTION NEEDED:  RFP Results: " & CliName & " " & Product
+        .HTMLBody = bodyMessage & vbNewLine & signature
+        .Attachments.Add DebriefFile
+        .DeferredDeliveryTime = DateAdd("d", 60, Date)
+        .Display        ' DISPLAY MESSAGE.
+    End With
+Else
+    With objEmail
+        .To = LiaisonContact
+        .CC = CTContact(0) & CTContact(1) & CTContact(2) & CTContact(3) & CTContact(4) & CTContact(5) & CTContact(6) & Manager & Coordinator & AdminContact & PMContact
+        .Subject = "ACTION NEEDED:  RFP Results: " & CliName & " " & Product
+        .HTMLBody = bodyMessage & vbNewLine & signature
+        .Attachments.Add DebriefFile
+        
+        .Display        ' DISPLAY MESSAGE.
+    End With
+End If
+
+
+' CLEAR.
+Set objEmail = Nothing:    Set applOutlook = Nothing
+
+    
+ErrHandler:
+   '
+End Sub
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Seperate Module sending eamils
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+Sub LosingCarrierEmail(VendorNumber As Integer, ProductType As String)
+
+Dim MySelf As String
+MySelf = Application.UserName
+'** Variable for Body message
+Dim bodyMessage As String
+Dim signature As String
+
+'On Error GoTo ErrHandler
+
+' SET Outlook APPLICATION OBJECT.
+Dim applOutlook As Object
+Set applOutlook = CreateObject("Outlook.Application")
+
+' CREATE EMAIL OBJECT.
+Dim objEmail As Object
+Set objEmail = applOutlook.CreateItem(olMailItem)
+
+'** Creating default signature (diplay default message with signature and save it under variable)
+With objEmail
+    .Display
+End With
+signature = objEmail.HTMLBody
+
+'** Body message here:
+    bodyMessage = "HERE YOU CAN ADD YOUR OUTLOOK MESSAGE"
+    
+'** Set variables to attachment
+'attachmentName = Application.GetOpenFilename
+'Debug.Print DebriefFile
+
+With objEmail
+    .SentOnBehalfOfName = "usbroking@aon.com"
+    .To = CarriersName(VendorNumber, 3)
+    .CC = MySelf
+    .BCC = ""
+    .Subject = ClientName & " - " & ProductType & " Decision"
+    .HTMLBody = bodyMessage & vbNewLine & signature
+    .Display        ' DISPLAY MESSAGE.
+End With
+
+
+
+' CLEAR.
+Set objEmail = Nothing:    Set applOutlook = Nothing
+
+    
+'ErrHandler:
+   '
+End Sub
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Seperate module sending emails
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Public CarriersName(15, 3) As String, ClientName As String, LiaisonName As String
+Sub SendEmailToVendors()
+
+Dim ProductsArray() As String
+Dim CarriersReason_Cell As Range, CarriersNotified_Cell As Range
+
+
+'SheetForEmails.Show
+
+ClientName = Right(Cells(1, 2), Len(Cells(1, 2)) - 13)
+For Each ws In ActiveWorkbook.Worksheets
+    
+    If ws.Visible = True And Not ws.Name = "Notification" Then
+        x = x + 1
+        ReDim Preserve ProductsArray(x)
+        ProductsArray(x) = ws.Name
+    ElseIf ws.Name = "Liaison" Then
+        Application.ScreenUpdating = False
+        ws.Visible = True
+        ws.Activate
+        LiaisonName = Cells(2, 1)
+        ws.Visible = xlVeryHidden
+        Application.ScreenUpdating = True
+    End If
+Next
+
+For ProductSheet = LBound(ProductsArray, 1) + 1 To UBound(ProductsArray, 1) 'cycling through all active products
+
+    Worksheets(ProductsArray(ProductSheet)).Activate
+    
+    Debug.Print "ProductsArray(ProductSheet): "; ProductsArray(ProductSheet)
+    
+    Set CarriersReason_Cell = Range("A1:D40").Find("did carriers lose")
+    Set CarriersNotified_Cell = Range("A1:D40").Find("carriers notified")
+    
+    
+    For Carriers = CarriersReason_Cell.Row + 2 To CarriersReason_Cell.Row + 15 'adding carriers name to array with carriers reason for losing
+    
+    Debug.Print "Carriers Number: "; Carriers
+        If IsEmpty(Cells(Carriers, CarriersReason_Cell.Column)) Then
+            Exit For
+        Else
+            CarriersName(Carriers - CarriersReason_Cell.Row - 1, 1) = Cells(Carriers, CarriersReason_Cell.Column) ' adding vendor name to first column in array
+            If Cells(Carriers, CarriersReason_Cell.Column + 1) = "Other" Then ' checking if reason is other
+                If Left(Cells(Carriers, CarriersReason_Cell.Column + 2), 2) = "If" Then ' if the reason is ohter checking if cells was reaplced with text or text was added
+                    CarriersName(Carriers - CarriersReason_Cell.Row - 1, 2) = Right(Cells(Carriers, CarriersReason_Cell.Column + 2), Len(Cells(Carriers, CarriersReason_Cell.Column + 2)) - 26)
+                Else
+                    CarriersName(Carriers - CarriersReason_Cell.Row - 1, 2) = Cells(Carriers, CarriersReason_Cell.Column + 2) ' initial text was delted, adding whole cell to array
+                End If
+            Else
+                CarriersName(Carriers - CarriersReason_Cell.Row - 1, 2) = Cells(Carriers, CarriersReason_Cell.Column + 1)
+            End If
+        End If
+    
+    Next Carriers
+    
+    'adding carriers email to array with vendors name and reason of losing
+    For AddingEmailContact = 1 To 15
+    
+        Select Case CarriersName(AddingEmailContact, 1)
+            Case Is = "VendorName"
+                CarriersName(AddingEmailContact, 3) = "EMAIL"
+                              
+            Case Is = "VendorName"
+                CarriersName(AddingEmailContact, 3) = "EMAIL"
+                
+            Case Is = "VendorName"
+                If ClientSize < 500 Then
+                    CarriersName(AddingEmailContact, 3) = "EMAIL"
+                ElseIf ClientSize < 5000 Then
+                    CarriersName(AddingEmailContact, 3) = "EMAIL"
+                ElseIf ClientSize >= 5000 Then
+                    CarriersName(AddingEmailContact, 3) = "EMAIL"
+                Else
+                    CarriersName(AddingEmailContact, 3) = "EMAIL"
+                End If
+                
+            Case Is = "VendorName"
+                CarriersName(AddingEmailContact, 3) = "EMAIL"
+            
+            Case Is = "VendorName"
+                CarriersName(AddingEmailContact, 3) = "EMAIL"
+                
+            Case Is = "VendorName"
+                CarriersName(AddingEmailContact, 3) = "EMAIL"
+                
+            Case Is = "VendorName"
+                CarriersName(AddingEmailContact, 3) = "EMAIL"
+                
+            Case Is = "VendorName"
+                CarriersName(AddingEmailContact, 3) = "EMAIL"
+            
+            Case Is = "VendorName"
+                CarriersName(AddingEmailContact, 3) = "EMAIL"
+        
+        End Select
+    
+    Next AddingEmailContact
+
+
+    'Checks if carrier was notified or CT told us to not notify
+    For NotNotified = CarriersNotified_Cell.Row + 2 To CarriersNotified_Cell.Row + 15
+        
+        If Cells(NotNotified, CarriersNotified_Cell.Column + 1) = "Do not notify" Or Cells(NotNotified, CarriersNotified_Cell.Column + 1) = "Carrier already notified" Or Cells(NotNotified, CarriersNotified_Cell.Column + 1) = "Do Carrier DTQ/Did not participate" Then
+            ' going to next values
+        ElseIf Cells(NotNotified, CarriersNotified_Cell.Column + 1) = "Carrier not notified" Then
+            'send email
+            
+            Call LosingCarrierEmail(NotNotified - CarriersNotified_Cell.Row - 1, ProductsArray(ProductSheet)) 'sending to new module info about 1st which vendor (from 1 - 15) in array is not notified, 2nd product name
+            Cells(NotNotified, CarriersNotified_Cell.Column + 1) = "Carrier already notified"
+        End If
+        
+    
+    Next NotNotified
+
+        
+        
+Erase CarriersName 'clear whole array with carriers name
+'here I have to clear Carriers Name Array
+        
+Next ProductSheet
+
+
+End Sub
