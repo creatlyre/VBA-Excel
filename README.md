@@ -9,7 +9,7 @@ Brief Description how those is works.
 
 4. If user make any changes in Accuracy (column) automatically macro will start	
 
-5. "If user input is No as accuracy user will be asked to provide a comment, comment will be added to ""Comments"" Column"	
+5. If user input is No as accuracy user will be asked to provide a comment, comment will be added to Comments (column)
 
 6. If user input is No, macro is adding relevant Error Code in "Error Code" column	
 
