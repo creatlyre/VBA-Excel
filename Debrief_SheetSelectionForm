@@ -1,0 +1,132 @@
+
+
+
+
+Private Sub CheckBox1_Click()
+
+End Sub
+
+Private Sub ClientName_Change()
+CliName = ClientName
+End Sub
+
+
+Private Sub DelayMesProductSheetge_Click()
+Delay = False
+If DelayMesProductSheetge = True Then
+    Delay = True
+Else
+    Delay = False
+End If
+End Sub
+
+Private Sub ProductSheet_Click()
+ProductSheetVal = False
+If ProductSheet = True Then
+    ProductSheetVal = True
+Else
+    ProductSheetVal = False
+End If
+End Sub
+
+
+Private Sub ProductSheet_Click()
+ProductSheetVal = False
+If ProductSheet = True Then
+    ProductSheetVal = True
+Else
+    ProductSheetVal = False
+End If
+End Sub
+
+Private Sub ProductSheet_Click()
+ProductSheetVal = False
+If ProductSheet = True Then
+    ProductSheetVal = True
+Else
+    ProductSheetVal = False
+End If
+End Sub
+
+Private Sub OkButton_Click()
+Unload Me
+End Sub
+
+Private Sub ProductSheet_Click()
+ProductSheetVal = False
+If ProductSheet = True Then
+    ProductSheetVal = True
+Else
+    ProductSheetVal = False
+End If
+End Sub
+
+Private Sub ProductSheet_Click()
+ProductSheetVal = False
+If ProductSheet = True Then
+    ProductSheetVal = True
+Else
+    ProductSheetVal = False
+End If
+End Sub
+
+Private Sub UserForm_Click()
+
+End Sub
+
+Private Sub ProductSheet_Acc_Click()
+ProductSheet_AccVal = False
+If ProductSheet_ACC = True Then
+    ProductSheet_AccVal = True
+Else
+    ProductSheet_AccVal = False
+End If
+End Sub
+
+Private Sub ProductSheet_AutoHome_Click()
+ProductSheet_HomeVal = False
+If ProductSheet_AutoHome = True Then
+    ProductSheet_HomeVal = True
+Else
+    ProductSheet_HomeVal = False
+End If
+End Sub
+
+Private Sub ProductSheet_PermLife_Click()
+ProductSheet_LifeVal = False
+If ProductSheet_PermLife = True Then
+    ProductSheet_LifeVal = True
+Else
+    ProductSheet_LifeVal = False
+End If
+End Sub
+
+
+
+Private Sub ProductSheetLegalCheck_Click()
+ProductSheet_LegalVal = False
+If ProductSheet_LegalCheck = True Then
+    ProductSheet_LegalVal = True
+Else
+    ProductSheet_LegalVal = False
+End If
+End Sub
+
+Private Sub ProductSheet_All_Click()
+ProductSheetVal = False
+If ProductSheet_All = True Then
+    ProductSheetVal = True
+Else
+    ProductSheetVal = False
+End If
+End Sub
+
+Private Sub ProductSheet_Click()
+ProductSheetVal = False
+If ProductSheet = True Then
+    ProductSheetVal = True
+Else
+    ProductSheetVal = False
+End If
+
+End Sub
