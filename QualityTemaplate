@@ -1,0 +1,488 @@
+'CODE WORKING IN EXCEL
+
+Private Sub Workbook_AfterSave(ByVal Success As Boolean)
+Dim ConsolidatedErrCell As Range
+
+'Set ConsolidatedErrCell = Range("A1:I100").Find("Consolidated Error")
+
+CreateEmail.Show
+    If CreateEmailDecision = True Then
+        Call SendEmail
+    Else
+        'do nothing
+    End If
+
+'If IsEmpty(Cells(ConsolidatedErrCell.Row, ConsolidatedErrCell.Column + 2)) Then
+    
+'ElseIf Saved = True Then
+'    CreateEmail.Show
+'    If CreateEmailDecision = True Then
+'        Call SendEmail
+'    Else
+'        'do nothing
+'    End If
+'
+'Else
+
+'End If
+End Sub
+
+Private Sub Workbook_Open()
+Dim Product As String, Stage As String, RFPQC() As String
+If IsEmpty(Cells(1, 4)) Then
+    
+    x = 0
+    ProductSelection.Show
+    Application.ScreenUpdating = False
+    'Cells(1, 4) = CliName
+    'changing wording in Review Bids depends on product
+    If DentVal = True Then
+    Worksheets("Dental").Visible = True
+    Worksheets("All Products").Visible = False
+    Worksheets("Dental").Activate
+    Manager = "Add contact"
+    Coordinator ="Add contact"
+    MySelf = True
+    
+    ElseIf VisVal = True Then
+    Worksheets("Vision").Visible = True
+    Worksheets("All Products").Visible = False
+    Worksheets("Vision").Activate
+    Manager = "Add contact"
+    Coordinator = "Add contact"
+    MySelf = True
+    
+    ElseIf LDVal = True Then
+    Worksheets("Life and Disability").Visible = True
+    Worksheets("All Products").Visible = False
+    Worksheets("Life and Disability").Activate
+    Manager = "Add contact"
+    Coordinator = "Add contact"
+    
+    'MANAGER Option disabled due to only temporary manager at moment of 24/02/2020
+    ElseIf SAVal = True Then
+    Worksheets("Spending Account").Visible = True
+    Worksheets("All Products").Visible = False
+    Worksheets("Spending Account").Activate
+    Manager = "Add contact"
+    Coordinator = "Add contact"
+    MySelf = True
+    
+    'MANAGER Option disabled due to only temporary manager at moment of 24/02/2020
+    ElseIf VBVal = True Then
+    Worksheets("Voluntary Benefits").Visible = True
+    Worksheets("All Products").Visible = False
+    Worksheets("Voluntary Benefits").Activate
+    Manager = "Add contact"
+    Coordinator = "Add contact"
+    
+    'MANAGER Option disabled due to SL divided to all managers
+    ElseIf SLVal = True Then
+    Worksheets("Stop Loss").Visible = True
+    Worksheets("All Products").Visible = False
+    Worksheets("Stop Loss").Activate
+    Manager = "Add contact"
+    Coordinator = "Add contact"
+    MySelf = True
+    
+    'MANAGER Option disabled due to only temporary manager at moment of 24/02/2020
+    ElseIf MedVal = True Then
+    Worksheets("Medical").Visible = True
+    Worksheets("All Products").Visible = False
+    Worksheets("Medical").Activate
+    Manager = "Add contact"
+    Coordinator = "Add contact"
+    MySelf = True
+    
+    Else
+    
+    End If
+    Application.ScreenUpdating = True
+    Cells(1, 4) = CliName
+    Cells(4, 4) = Application.UserName
+    Cells(4, 1) = Format(Date, "Short Date")
+    
+    
+    On Error GoTo ErrHandler:
+    Product = ActiveSheet.Name
+    If Stage_RFP = True Then
+        Stage = " RFP Build QC"
+    ElseIf Stage_Deliverables = True Then
+        
+        'ReDim RFPQC(35, 3)
+        'For ErrorRow = 7 To 35
+        
+        
+        'Next ErrorRow
+        
+        
+        
+        
+ErrHandler:
+        Stage = " Deliverables QC"
+    Else
+        Stage = " RFP Build Deliverables QC"
+    End If
+
+    'Set all rows to YES
+    Application.ScreenUpdating = False
+    If YesColumn = True Then
+        For RowAccuracy = 7 To 40
+            If Cells(RowAccuracy, 5) = "Accuracy" Or IsEmpty(Cells(RowAccuracy, 4)) Or Rows(RowAccuracy).Hidden = True Then
+                'do nothing
+            Else
+                Cells(RowAccuracy, 5) = "Yes"
+            End If
+        Next RowAccuracy
+    Else
+        'do not
+    End If
+    
+    'Adds (PHI) Hide Detalis regarding case
+    Sheets("CaseDetails").Activate
+    Cells(2, 1) = CliName
+    Cells(2, 2) = AdminName
+    Cells(2, 3) = Product
+    Cells(2, 4) = Application.UserName
+    Cells(2, 5) = Format(Date, "Short Date")
+    Cells(2, 6) = Stage
+    Worksheets("CaseDetails").Visible = 2
+    
+    'Year = Format(Date, "yyyy")
+    'Month = Format(Date, "mmmm")
+    'Product = Cells(1, 20)
+    
+    '@@@@@@@@@@@@@@@@ SAVES FILE UNDER SPECIFIC FOLDER@@@@@@@@@@@@@@@@@@@@@@@@@
+    Call ThisWorkbook.SaveAs(Filename:="FOLDER PATH" & "\" & _
+    Format(Date, "yyyy") & "\" & Format(Date, "mmmm") & "\" & CliName & Stage, FileFormat:=xlOpenXMLWorkbookMacroEnabled)
+    Call MsgBox("The file has been saved on Share Drive in: " & "\\aonus1\chdacw\FS100VOL1\SPS_Team\Quality Reporting\RFP QC Results\" & Product & "\" & _
+    Format(Date, "yyyy") & "\" & Format(Date, "mmmm") & " folder.")
+    
+    
+    '@@@@@@@@ TEST FOLDER @@@@@@@@@@@@@@@@@@
+    'Call ThisWorkbook.SaveAs(Filename:="FOLDER PATH& Stage, FileFormat:=xlOpenXMLWorkbookMacroEnabled)
+    
+    
+    '@@@@@@@@@@@@@@@@ INTERNAL SAVES FILE UNDER SPECIFIC FOLDER@@@@@@@@@@@@@@@@@@@@@@@@@
+    'Call ThisWorkbook.SaveAs(Filename:="FOLDER PATH & "\" & _
+    Format(Date, "yyyy") & "\" & Format(Date, "mmmm") & "\" & CliName & " RFP QC", FileFormat:=xlOpenXMLWorkbookMacroEnabled)
+
+Else
+    'do nothing
+End If
+
+End Sub
+Sub HideSheets()
+
+
+For Each sh In Worksheets
+    sh.Visible = -1
+    sh.Activate
+    'Columns(1).ColumnWidth = 17.5
+    'Rows(39).Hidden = True;
+    'Cells(6, 3) = "Section"
+    'Cells(13, 3) = "Section"
+    'Cells(21, 3) = "Section"
+    'Cells(26, 3) = "Section"
+    
+Next sh
+End Sub
+
+
+Public Sub SendEmail()
+
+'** Variables to open files
+Dim attachmentName As Variant
+
+'** Variable for Body message
+Dim bodyMessage As String
+Dim signature As String
+Dim ClientName As String, AdministratorName() As String, PrdocutName As String, StageName As String, ConsolidatedCodes As String, Mee As String
+On Error GoTo ErrHandler
+
+' SET Outlook APPLICATION OBJECT.
+Dim applOutlook As Object
+Set applOutlook = CreateObject("Outlook.Application")
+
+' CREATE EMAIL OBJECT.
+Dim objEmail As Object
+Set objEmail = applOutlook.CreateItem(olMailItem)
+
+'** Variables input from CaseDetails Sheet inside excel file
+ConsolidatedCodes = Cells(40, 4)
+Sheets("CaseDetails").Activate
+ClientName = Cells(2, 1)
+AdministratorName() = Split(Cells(2, 2))
+PrdocutName = Cells(2, 3)
+'Cells(2, 4) = Application.UserName
+'Cells(2, 5) = Format(Date, "Short Date")
+StageName = Cells(2, 6)
+Worksheets("CaseDetails").Visible = 2
+
+
+'** Creating default signature (diplay default message with signature and save it under variable)
+With objEmail
+    .Display
+End With
+signature = objEmail.HTMLBody
+
+
+'** Body message here:
+    bodyMessage = "THE MESSAGE " & AdministratorName(0) & ", " & Chr(10) & Chr(10) _
+    & "<br> <br> I am sending a completed template. Below you may find mistakes made in stage: " & StageName & Chr(10) _
+    & "<br> <br> " & ConsolidatedCodes & Chr(10) & Chr(10) _
+    & "<br> <br> Thanks,"
+    
+'** Set variables to attachment
+attachmentName = ThisWorkbook.FullName
+'Debug.Print DebriefFile
+
+'If MySelf = True Then
+'    Mee = Application.UserName
+'Else
+'    Mee = ""
+'End If
+
+With objEmail
+    .To = AdministratorName(0) & " " & AdministratorName(1)
+    .CC = Manager & Coordinator
+    .Subject = ClientName & " - " & PrdocutName & StageName 'Cells(1, 4)--> Clinet Name @@@ Cells(1, 20) --> Product
+    .HTMLBody = bodyMessage & signature
+    .Attachments.Add attachmentName
+    .Display        ' DISPLAY MESSAGE.
+End With
+
+
+
+' CLEAR.
+Set objEmail = Nothing:    Set applOutlook = Nothing
+
+    
+ErrHandler:
+   '
+End Sub
+
+Public DentVal As Boolean, VisVal As Boolean, CliName As String, SAVal As Boolean, VBVal As Boolean, LDVal As Boolean, SLVal As Boolean, MedVal As Boolean, x As Integer, LockRange As Variant
+Public AdminName As String, YesColumn As Boolean, Stage_RFP As Boolean, Stage_Deliverables As Boolean, Stage_RFP_Deli As Boolean, Manager As String, Coordinator As String, CreateEmailDecision As Boolean, MySelf As Boolean
+
+Public Sub NoValue(range1 As Integer)
+
+Call ClearCells(range1)
+
+Dim ErrorNumber As Variant
+Dim PreCall As Variant, BuildRFP As Variant, Communication As Variant, ReviewBids As Variant
+    
+    Set PreCall = Range("A1:B60").Find("Pre")
+    Set BuildRFP = Range("A1:B60").Find("Build")
+    Set Communication = Range("A1:B60").Find("Bidding")
+    Set ReviewBids = Range("A1:B60").Find("Bids")
+
+
+'checks in which section is "no" counts first from the lowest
+    If range1 > ReviewBids.Row - 1 Then
+        
+        If InStr(1, Cells(range1, 3), "Timeliness") Then
+            ErrorNumber = "T"
+        Else
+            'Debug.Print "Przed Error number: "; ErrorNumber
+            ErrorNumber = range1 - ReviewBids.Row + 1
+            'Debug.Print " Po Error number: "; ErrorNumber
+        End If
+        
+        LockRangeFunction
+        
+        Cells(range1, 6) = "4RFP" & ErrorNumber
+        Cells(range1, 7) = LockRange
+        
+    
+    ElseIf range1 > Communication.Row - 1 Then
+        If InStr(1, Cells(range1, 3), "Timeliness") Then
+            ErrorNumber = "T"
+        Else
+            'Debug.Print "Przed Error number: "; ErrorNumber
+            ErrorNumber = range1 - Communication.Row + 1
+            'Debug.Print " Po Error number: "; ErrorNumber
+        End If
+        
+        LockRangeFunction
+        
+        Cells(range1, 6) = "3RFP" & ErrorNumber
+        Cells(range1, 7) = LockRange
+    ElseIf range1 > BuildRFP.Row - 1 Then
+        If InStr(1, Cells(range1, 3), "Timeliness") Then
+            ErrorNumber = "T"
+        Else
+            'Debug.Print "Przed Error number: "; ErrorNumber
+            ErrorNumber = range1 - BuildRFP.Row + 1
+            'Debug.Print " Po Error number: "; ErrorNumber
+        End If
+        
+        LockRangeFunction
+        
+        Cells(range1, 6) = "2RFP" & ErrorNumber
+        Cells(range1, 7) = LockRange
+        
+    ElseIf range1 > PreCall.Row - 1 Then
+        If InStr(1, Cells(range1, 3), "Timeliness") Then
+            ErrorNumber = "T"
+          Else
+            'Debug.Print "Przed Error number: "; ErrorNumber
+            ErrorNumber = range1 - PreCall.Row + 1
+            'Debug.Print " Po Error number: "; ErrorNumber
+        End If
+        
+        LockRangeFunction
+        
+        Cells(range1, 6) = "1RFP" & ErrorNumber
+        Cells(range1, 7) = LockRange
+    End If
+    
+
+            'Call QualityCheck
+
+End Sub
+
+Public Sub YesValue(range1 As Integer)
+        Call ClearCells(range1)
+        Cells(range1, 6).Interior.ColorIndex = 48
+        'Call QualityCheck
+        
+End Sub
+
+Public Sub NAValue(range1 As Integer)
+    Call ClearCells(range1)
+    'Call QualityCheck
+    Cells(range1, 6).Interior.ColorIndex = 48
+    Cells(range1, 7).Interior.ColorIndex = 48
+End Sub
+
+
+Public Sub ClearCells(range1 As Integer)
+    
+    Cells(range1, 6) = " "
+    Cells(range1, 7) = " "
+    Cells(range1, 6).Interior.ColorIndex = 2
+    Cells(range1, 7).Interior.ColorIndex = 2
+    'Call QualityCheck
+    
+End Sub
+
+Public Sub QualityCheck_LD()
+
+    Dim Quality As Double, Decrase As Double
+    Dim ErrorCode As Range, QualityScore As Range
+    
+    Set ErrorCode = Range("A1:H20").Find("Error Code")
+    Set QualityScore = Range("A30:E100").Find("Quality")
+    
+    Quality = 100
+    Decrase = 100 / 19
+    
+    For IsErrorInRow = ErrorCode.Row + 1 To 40
+        If IsEmpty(Cells(IsErrorInRow, ErrorCode.Column)) Or Cells(IsErrorInRow, ErrorCode.Column) = " " Or Cells(IsErrorInRow, ErrorCode.Column) = "Error Code" Then GoTo NextIteration
+            ' goes to next iteartion
+        If InStr(1, Cells(IsErrorInRow, ErrorCode.Column), "T") Then
+                'do nothing
+        ElseIf InStr(1, Cells(IsErrorInRow, ErrorCode.Column), "RFP") Then
+            Quality = Quality - Decrase
+        End If
+
+NextIteration:
+    Next IsErrorInRow
+    
+If Quality < 1 Then
+    Cells(QualityScore.Row, QualityScore.Column + 2) = "0%"
+Else
+    Cells(QualityScore.Row, QualityScore.Column + 2) = Quality & "%"
+End If
+
+End Sub
+
+Public Sub QualityCheck_VB()
+
+    Dim Quality As Double, Decrase As Double
+    Dim ErrorCode As Range, QualityScore As Range
+    
+    Set ErrorCode = Range("A1:H20").Find("Error Code")
+    Set QualityScore = Range("A30:E100").Find("Quality")
+    
+    Quality = 100
+    Decrase = 100 / 14
+    
+    For IsErrorInRow = ErrorCode.Row + 1 To 40
+        If IsEmpty(Cells(IsErrorInRow, ErrorCode.Column)) Or Cells(IsErrorInRow, ErrorCode.Column) = " " Or Cells(IsErrorInRow, ErrorCode.Column) = "Error Code" Then GoTo NextIteration
+            ' goes to next iteartion
+        If InStr(1, Cells(IsErrorInRow, ErrorCode.Column), "T") Then
+                'do nothing
+        ElseIf InStr(1, Cells(IsErrorInRow, ErrorCode.Column), "RFP") Then
+            Quality = Quality - Decrase
+        End If
+
+NextIteration:
+    Next IsErrorInRow
+    
+If Quality < 1 Then
+    Cells(QualityScore.Row, QualityScore.Column + 2) = "0%"
+Else
+    Cells(QualityScore.Row, QualityScore.Column + 2) = Quality & "%"
+End If
+
+End Sub
+
+Public Sub QualityCheck()
+
+    Dim Quality As Double, Decrase As Double
+    Dim ErrorCode As Range, QualityScore As Range
+    
+    Set ErrorCode = Range("A1:H20").Find("Error Code")
+    Set QualityScore = Range("A30:E100").Find("Quality")
+    
+    Quality = 100
+    Decrase = 100 / 18
+    
+    For IsErrorInRow = ErrorCode.Row + 1 To 40
+        If IsEmpty(Cells(IsErrorInRow, ErrorCode.Column)) Or Cells(IsErrorInRow, ErrorCode.Column) = " " Or Cells(IsErrorInRow, ErrorCode.Column) = "Error Code" Then GoTo NextIteration
+            ' goes to next iteartion
+        If InStr(1, Cells(IsErrorInRow, ErrorCode.Column), "T") Then
+                'do nothing
+        ElseIf InStr(1, Cells(IsErrorInRow, ErrorCode.Column), "RFP") Then
+            Quality = Quality - Decrase
+            'Debug.Print Quality; "%"; " Number: "; IsErrorInRow
+        End If
+
+NextIteration:
+    Next IsErrorInRow
+
+If Quality < 1 Then
+    Cells(QualityScore.Row, QualityScore.Column + 2) = "0%"
+Else
+    Cells(QualityScore.Row, QualityScore.Column + 2) = Quality & "%"
+End If
+
+End Sub
+
+Public Function LockRangeFunction()
+Dim ExitLoop As Boolean
+Do
+     ErrorTextBox.Show
+     Select Case LockRange
+         Case Is = "False"
+             ExitLoop = False
+             
+         Case Is = ""
+             ExitLoop = False
+             
+         Case Else
+             If Len(LockRange) = 0 Then
+                 ExitLoop = False
+                 
+             Else
+                 ExitLoop = True
+                 
+             End If
+     End Select
+Loop Until ExitLoop = True
+End Function
+
+
+
